@@ -1,0 +1,92 @@
+[
+  {
+    "pregunta": "Una brecha laboral es:",
+    "opciones": [
+      "Un despido",
+      "La distancia entre lo que tengo y lo que pide el cargo",
+      "Un tipo de contrato"
+    ],
+    "correcta": 2
+  },
+  {
+    "pregunta": "Un talento real es el que:",
+    "opciones": [
+      "Cumple 2 de 3 filtros: me sale fácil, otros me buscan, me da energía",
+      "Solo me gusta",
+      "Dice mi título"
+    ],
+    "correcta": 1
+  },
+  {
+    "pregunta": "¿Cuál es un logro bien escrito?",
+    "opciones": [
+      "\"Cargaba cajas\"",
+      "\"Soy responsable\"",
+      "\"Alisté 120 pedidos diarios con cero errores\""
+    ],
+    "correcta": 3
+  },
+  {
+    "pregunta": "Para pasar los filtros automáticos (ATS) conviene:",
+    "opciones": [
+      "Usar tablas e imágenes",
+      "Usar las palabras de la vacante",
+      "Enviar la hoja de vida en foto"
+    ],
+    "correcta": 2
+  },
+  {
+    "pregunta": "STAR significa:",
+    "opciones": [
+      "Situación, Tarea, Acción, Resultado",
+      "Saber, Tener, Actuar, Reír",
+      "Suerte, Talento, Arte, Ritmo"
+    ],
+    "correcta": 1
+  },
+  {
+    "pregunta": "Ante la pregunta \"¿por qué saliste de tu último trabajo?\" lo mejor es:",
+    "opciones": [
+      "Hablar mal del jefe",
+      "Dar un motivo breve y en positivo",
+      "No responder"
+    ],
+    "correcta": 2
+  },
+  {
+    "pregunta": "La comunicación asertiva es:",
+    "opciones": [
+      "Callar para evitar problemas",
+      "Claridad y respeto, con una propuesta",
+      "Imponer mi punto"
+    ],
+    "correcta": 2
+  },
+  {
+    "pregunta": "Según la regla del 70 %, debes postularte a una vacante cuando:",
+    "opciones": [
+      "Cumples todos los requisitos deseables",
+      "Cumples al menos el 70 % de los requisitos obligatorios",
+      "Tienes el 70 % de los años de experiencia que piden"
+    ],
+    "correcta": 2
+  },
+  {
+    "pregunta": "En la escucha activa, parafrasear significa:",
+    "opciones": [
+      "Repetir con tus palabras lo que entendiste, para confirmar",
+      "Interrumpir para dar tu opinión",
+      "Asentir aunque no estés prestando atención"
+    ],
+    "correcta": 1
+  },
+  {
+    "pregunta": "Al terminar un contrato, el certificado laboral:",
+    "opciones": [
+      "Solo se entrega si la empresa quiere",
+      "Debe expedirse si lo pides, con tiempo de servicio, labor y salario",
+      "Reemplaza las referencias personales"
+    ],
+    "correcta": 2
+  }
+]

@@ -1,0 +1,7 @@
+# Nunca subir credenciales
+.streamlit/secrets.toml
+*.json.key
+credenciales*.json
+__pycache__/
+.venv/
+.DS_Store
