@@ -7,18 +7,18 @@
 
 # --- Datos del curso -----------------------------------------
 NOMBRE_CURSO = "Taller virtual de empleabilidad: Tu experiencia vale"
-INTENSIDAD_HORARIA = 1              # horas que aparecen en el certificado
-ORGANIZACION = "Nuevas Generaciones"  # quién otorga el certificado
+INTENSIDAD_HORARIA = 1              # horas que aparecen en la constancia
+ORGANIZACION = "Nuevas Generaciones"  # quién otorga la constancia
 
 # --- Evaluación ----------------------------------------------
-PUNTAJE_MINIMO = 70                 # porcentaje mínimo para aprobar (0 a 100)
-MAX_INTENTOS = 3                    # intentos permitidos por cédula
+PUNTAJE_MINIMO = 60                 # porcentaje mínimo para aprobar (0 a 100). 60 = 3 de 5 preguntas
+MAX_INTENTOS = 0                    # intentos permitidos por cédula. 0 = sin límite
 
-# --- Certificado ---------------------------------------------
+# --- Constancia ----------------------------------------------
 FIRMANTE_NOMBRE = "Nuevas Generaciones"
 FIRMANTE_CARGO = ""                 # ej.: "Coordinador(a) de Formación". Déjalo "" si no aplica
-PREFIJO_CERTIFICADO = "NG"          # los certificados quedan como NG-2026-00001
-LOGO_PATH = "assets/logo.png"       # opcional: si no existe, el certificado sale sin logo
+PREFIJO_CERTIFICADO = "NG"          # las constancias quedan como NG-2026-00001
+LOGO_PATH = "assets/logo.png"       # opcional: si no existe, la constancia sale sin logo
 FIRMA_PATH = "assets/firma.png"     # imagen de la firma (fondo transparente). Opcional
 
 # --- Google Sheets -------------------------------------------
@@ -35,16 +35,17 @@ NOMBRE_HOJA = "Registros"           # nombre de la pestaña donde se guardan los
 USAR_CLAVE_ACCESO = False
 
 # --- Apariencia y archivos -----------------------------------
-COLOR_PRINCIPAL = "#C00000"
-CARPETA_DIAPOSITIVAS = "slides"
+COLOR_PRINCIPAL = "#0070C0"         # azul de las diapositivas (botones, marco de la constancia)
+COLOR_SUAVE = "#EAF3FB"             # azul muy claro para fondos y pasos completados
+CARPETA_DIAPOSITIVAS = "."          # "." = las imágenes están en la carpeta principal del repositorio
 ARCHIVO_PREGUNTAS = "preguntas.json"
 ZONA_HORARIA = "America/Bogota"
 
 # --- Texto de autorización de datos (Ley 1581 de 2012) --------
 TEXTO_AUTORIZACION = (
-    "Autorizo a Nuevas Generaciones a recolectar y tratar mi nombre y número "
-    "de cédula con la única finalidad de registrar mi participación en esta "
-    "capacitación y emitir el certificado correspondiente, conforme a la "
-    "Ley 1581 de 2012. Puedo conocer, actualizar, rectificar o solicitar la "
-    "supresión de mis datos en cualquier momento."
+    "De manera previa, expresa e informada, autorizo el tratamiento de mis datos "
+    "personales (nombre y número de cédula) con la única finalidad de registrar mi "
+    "participación en esta capacitación y expedir la constancia correspondiente, "
+    "conforme a la Ley 1581 de 2012 y sus decretos reglamentarios. Conozco mi derecho "
+    "a consultar, actualizar, rectificar o solicitar la supresión de mis datos."
 )
