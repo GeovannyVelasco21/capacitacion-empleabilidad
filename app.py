@@ -1,6 +1,6 @@
 """
-Capacitación virtual con evaluación y certificado.
-Flujo: (clave) → registro → contenido → evaluación → certificado.
+Capacitación virtual con evaluación y constancia de participación.
+Flujo: (clave) → registro → contenido → evaluación → constancia.
 Los parámetros se cambian en config.py y las preguntas en preguntas.json.
 """
 
@@ -25,6 +25,7 @@ st.set_page_config(page_title=config.NOMBRE_CURSO, page_icon="🎓", layout="cen
 # ------------------------------------------------------------------
 def aplicar_estilo():
     c = config.COLOR_PRINCIPAL
+    suave = config.COLOR_SUAVE
     st.markdown(
         f"""
         <style>
@@ -32,11 +33,12 @@ def aplicar_estilo():
         html, body, .stApp, .stApp *:not([data-testid="stIconMaterial"]):not(.material-symbols-rounded) {{
             font-family: 'Montserrat', sans-serif;
         }}
-        .stApp {{ background: #F6F6F7; }}
+        .stApp {{ background: #FFFFFF; }}
         .block-container {{ padding-top: 2rem; max-width: 900px; }}
         [data-testid="stVerticalBlockBorderWrapper"] {{
             background: #FFFFFF; border-radius: 14px !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            border-color: #D6E6F5 !important;
+            box-shadow: 0 2px 12px rgba(0,112,192,.06);
         }}
         .encabezado {{
             background: {c}; color: #fff; border-radius: 14px;
@@ -46,9 +48,9 @@ def aplicar_estilo():
         .encabezado h1 {{ color: #fff; font-size: 1.35rem; margin: .2rem 0 0; padding: 0; font-weight: 700; }}
         .pasos {{ display: flex; gap: .4rem; margin: 0 0 1.1rem; flex-wrap: wrap; }}
         .paso {{ flex: 1; min-width: 110px; text-align: center; font-size: .75rem; font-weight: 600;
-                 padding: .45rem .3rem; border-radius: 999px; background: #E9E9EC; color: #777; }}
+                 padding: .45rem .3rem; border-radius: 999px; background: #F1F4F8; color: #7A8699; }}
         .paso.activo {{ background: {c}; color: #fff; }}
-        .paso.hecho {{ background: #F3D6D6; color: {c}; }}
+        .paso.hecho {{ background: {suave}; color: {c}; }}
         .puntaje {{ font-size: 2.6rem; font-weight: 700; color: {c}; line-height: 1.1; }}
         .stProgress > div > div > div > div {{ background-color: {c}; }}
         </style>
@@ -57,7 +59,7 @@ def aplicar_estilo():
     )
 
 
-PASOS = ["Registro", "Contenido", "Evaluación", "Certificado"]
+PASOS = ["Registro", "Contenido", "Evaluación", "Constancia"]
 PANTALLA_A_PASO = {"registro": 0, "contenido": 1, "examen": 2, "resultado": 2, "certificado": 3}
 
 
@@ -86,10 +88,24 @@ def cargar_preguntas():
         return json.load(f)
 
 
+EXTENSIONES = {".png", ".jpg", ".jpeg", ".webp"}
+
+
+def _orden_natural(ruta: Path):
+    """Ordena 'slide_2' antes que 'slide_10' (y 'Diapositiva2' antes que 'Diapositiva10')."""
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", ruta.name)]
+
+
 @st.cache_data
 def cargar_diapositivas():
+    """Toma todas las imágenes de la carpeta, sin importar mayúsculas en la extensión."""
     carpeta = RAIZ / config.CARPETA_DIAPOSITIVAS
-    return sorted(str(p) for p in carpeta.glob("slide_*.png"))
+    imagenes = [p for p in carpeta.iterdir() if p.is_file() and p.suffix.lower() in EXTENSIONES]
+    return [str(p) for p in sorted(imagenes, key=_orden_natural)]
+
+
+def sin_limite() -> bool:
+    return not config.MAX_INTENTOS or config.MAX_INTENTOS <= 0
 
 
 def ahora():
@@ -141,11 +157,11 @@ def pantalla_clave():
 def pantalla_registro():
     with st.container(border=True):
         st.subheader("Registro")
-        st.write("Ingresa tus datos tal como quieres que aparezcan en el certificado.")
+        st.write("Ingresa tus datos tal como quieres que aparezcan en la constancia.")
         with st.form("form_registro"):
             nombre = st.text_input("Nombre completo *", max_chars=80)
             cedula = st.text_input("Número de cédula *", max_chars=10, help="Solo números, sin puntos ni espacios.")
-            acepta = st.checkbox(f"Acepto el tratamiento de mis datos personales. {config.TEXTO_AUTORIZACION}")
+            acepta = st.checkbox(config.TEXTO_AUTORIZACION)
             enviar = st.form_submit_button("Comenzar la capacitación", type="primary")
 
     if not enviar:
@@ -168,7 +184,7 @@ def pantalla_registro():
     st.session_state.nombre = nombre
     st.session_state.cedula = cedula
 
-    # Historial en Google Sheets: intentos previos y certificado ya emitido
+    # Historial en Google Sheets: intentos previos y constancia ya emitida
     try:
         with st.spinner("Verificando tu registro..."):
             hist = sheets.historial_cedula(cedula)
@@ -188,7 +204,7 @@ def pantalla_registro():
         ir("certificado")
 
     st.session_state.intentos = hist["intentos"]
-    if hist["intentos"] >= config.MAX_INTENTOS:
+    if not sin_limite() and hist["intentos"] >= config.MAX_INTENTOS:
         st.session_state.intentos = config.MAX_INTENTOS
         ir("resultado")
     ir("contenido")
@@ -240,10 +256,12 @@ def pantalla_examen():
 
     with st.container(border=True):
         st.subheader("Evaluación final")
-        st.write(
-            f"{len(preguntas)} preguntas de selección única. Necesitas **{config.PUNTAJE_MINIMO} %** para aprobar. "
-            f"Intento **{intento} de {config.MAX_INTENTOS}**."
-        )
+        minimo = -(-config.PUNTAJE_MINIMO * len(preguntas) // 100)  # preguntas buenas necesarias
+        texto = (f"Son {len(preguntas)} preguntas cortas. Elige una respuesta en cada una. "
+                 f"Necesitas **{minimo} buenas** para recibir tu constancia.")
+        if not sin_limite():
+            texto += f" Intento **{intento} de {config.MAX_INTENTOS}**."
+        st.write(texto)
         with st.form(f"form_examen_{intento}"):
             respuestas = []
             for n, p in enumerate(preguntas, start=1):
@@ -286,14 +304,17 @@ def pantalla_examen():
 
 
 def pantalla_resultado():
-    restantes = config.MAX_INTENTOS - st.session_state.intentos
+    restantes = 1 if sin_limite() else config.MAX_INTENTOS - st.session_state.intentos
     with st.container(border=True):
         if st.session_state.puntaje is not None:
             st.markdown(f'<div class="puntaje">{st.session_state.puntaje:g} %</div>', unsafe_allow_html=True)
-            st.write(f"Tu puntaje no alcanzó el mínimo de {config.PUNTAJE_MINIMO} %.")
+            st.write("¡Casi lo logras! Esta vez no alcanzaste el puntaje mínimo.")
         if restantes > 0:
-            st.info(f"Te {'queda' if restantes == 1 else 'quedan'} {restantes} "
-                    f"{'intento' if restantes == 1 else 'intentos'}. Repasa el contenido y vuelve a intentarlo.")
+            if sin_limite():
+                st.info("Puedes repasar las diapositivas o intentarlo de nuevo cuando quieras.")
+            else:
+                st.info(f"Te {'queda' if restantes == 1 else 'quedan'} {restantes} "
+                        f"{'intento' if restantes == 1 else 'intentos'}. Repasa el contenido y vuelve a intentarlo.")
             c1, c2 = st.columns(2)
             if c1.button("Repasar el contenido", width="stretch"):
                 st.session_state.slide = 0
@@ -308,7 +329,7 @@ def pantalla_resultado():
 def pantalla_certificado():
     with st.container(border=True):
         if st.session_state.get("ya_aprobado"):
-            st.success(f"{st.session_state.nombre}, ya habías aprobado este curso. Puedes descargar tu certificado de nuevo.")
+            st.success(f"{st.session_state.nombre}, ya habías completado esta capacitación. Puedes descargar tu constancia de nuevo.")
         else:
             st.balloons()
             st.markdown(f'<div class="puntaje">{st.session_state.puntaje:g} %</div>', unsafe_allow_html=True)
@@ -320,15 +341,15 @@ def pantalla_certificado():
             st.session_state.fecha_cert or ahora().date(),
         )
         st.download_button(
-            "Descargar certificado (PDF)",
+            "Descargar constancia (PDF)",
             data=pdf,
-            file_name=f"Certificado_{st.session_state.cedula}.pdf",
+            file_name=f"Constancia_{st.session_state.cedula}.pdf",
             mime="application/pdf",
             type="primary",
             width="stretch",
             on_click="ignore",
         )
-        st.caption(f"Certificado No. {st.session_state.certificado}")
+        st.caption(f"Constancia No. {st.session_state.certificado}")
 
 
 # ------------------------------------------------------------------
