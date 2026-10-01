@@ -1,6 +1,6 @@
 # Taller virtual de empleabilidad – Nuevas Generaciones
 
-App en Streamlit: registro → 37 diapositivas → evaluación (10 preguntas, 70 %, 3 intentos) → certificado PDF.
+App en Streamlit: registro → diapositivas (se cuentan solas) → evaluación (5 preguntas, 60 %, intentos sin límite) → constancia de participación en PDF.
 Los intentos quedan en Google Sheets (conexión por Apps Script: `apps_script/Codigo.gs`).
 
 - Parámetros: `config.py`
