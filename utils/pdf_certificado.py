@@ -1,4 +1,4 @@
-"""Genera el certificado en PDF (A4 horizontal) con fpdf2."""
+"""Genera la constancia de participación en PDF (A4 horizontal) con fpdf2."""
 
 from datetime import date
 from pathlib import Path
@@ -37,7 +37,7 @@ def _registrar_fuentes(pdf: FPDF) -> str:
 
 
 def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> bytes:
-    rojo = _rgb(config.COLOR_PRINCIPAL)
+    azul = _rgb(config.COLOR_PRINCIPAL)
     gris = (90, 90, 90)
     pdf = FPDF(orientation="L", unit="mm", format="A4")  # 297 x 210 mm
     pdf.set_auto_page_break(False)
@@ -46,10 +46,10 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
     fuente = _registrar_fuentes(pdf)
     W, H = 297, 210
 
-    # Marco: franja lateral roja + borde fino
-    pdf.set_fill_color(*rojo)
+    # Marco: franja lateral azul + borde fino
+    pdf.set_fill_color(*azul)
     pdf.rect(0, 0, 14, H, style="F")
-    pdf.set_draw_color(*rojo)
+    pdf.set_draw_color(*azul)
     pdf.set_line_width(0.6)
     pdf.rect(22, 10, W - 32, H - 20)
     pdf.set_line_width(0.2)
@@ -63,18 +63,18 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
         pdf.image(str(logo), x=W / 2 - 22 + 7, y=20, h=22, keep_aspect_ratio=True, w=44)
 
     # Título
-    pdf.set_text_color(*rojo)
+    pdf.set_text_color(*azul)
     pdf.set_font(fuente, "B", 30)
     pdf.set_xy(cx, 50)
-    pdf.cell(ancho, 14, "CERTIFICADO", align="C")
+    pdf.cell(ancho, 14, "CONSTANCIA", align="C")
     pdf.set_font(fuente, "", 11)
     pdf.set_text_color(*gris)
     pdf.set_xy(cx, 64)
-    pdf.cell(ancho, 6, "DE APROBACIÓN", align="C")
+    pdf.cell(ancho, 6, "DE PARTICIPACIÓN", align="C")
 
     # Cuerpo
     pdf.set_xy(cx, 78)
-    pdf.cell(ancho, 7, f"{config.ORGANIZACION} certifica que", align="C")
+    pdf.cell(ancho, 7, f"{config.ORGANIZACION} hace constar que", align="C")
 
     pdf.set_text_color(30, 30, 30)
     pdf.set_font(fuente, "B", 24)
@@ -84,7 +84,7 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
         pdf.set_font(fuente, "B", tam)
     pdf.set_xy(cx, 87)
     pdf.cell(ancho, 12, nombre.upper(), align="C")
-    pdf.set_draw_color(*rojo)
+    pdf.set_draw_color(*azul)
     pdf.set_line_width(0.4)
     pdf.line(W / 2 - 60 + 7, 101, W / 2 + 60 + 7, 101)
 
@@ -93,9 +93,9 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
     pdf.set_xy(cx, 104)
     pdf.cell(ancho, 7, f"identificado(a) con cédula de ciudadanía No. {formato_cedula(cedula)}", align="C")
     pdf.set_xy(cx, 112)
-    pdf.cell(ancho, 7, "aprobó satisfactoriamente el curso", align="C")
+    pdf.cell(ancho, 7, "participó y completó la capacitación", align="C")
 
-    pdf.set_text_color(*rojo)
+    pdf.set_text_color(*azul)
     pdf.set_font(fuente, "B", 15)
     pdf.set_xy(cx + 10, 121)
     pdf.multi_cell(ancho - 20, 8, config.NOMBRE_CURSO, align="C")
@@ -107,7 +107,7 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
     pdf.set_xy(cx, pdf.get_y() + 2)
     pdf.cell(ancho, 7, f"con una intensidad de {texto_horas}.", align="C")
     pdf.set_xy(cx, pdf.get_y() + 7)
-    pdf.cell(ancho, 7, f"Expedido el {fecha_en_letras(fecha)}.", align="C")
+    pdf.cell(ancho, 7, f"Expedida el {fecha_en_letras(fecha)}.", align="C")
 
     # Firma
     fx, fy, fw = W / 2 - 40 + 7, 166, 80
@@ -131,6 +131,6 @@ def generar_certificado(nombre: str, cedula: str, numero: str, fecha: date) -> b
     pdf.set_font(fuente, "", 8)
     pdf.set_text_color(*gris)
     pdf.set_xy(W - 110, H - 22)
-    pdf.cell(80, 5, f"Certificado No. {numero}", align="R")
+    pdf.cell(80, 5, f"Constancia No. {numero}", align="R")
 
     return bytes(pdf.output())
